@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compras del finde largo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f7f3fb; --card:#ffffff; --ink:#2a1b3d; --muted:#7a6c8c; --line:#e5dcef;
+  --pumpkin:#e8741e; --done:#b9aecb; --ok:#2f8f5b;
+  --font-h:'Bricolage Grotesque','Trebuchet MS',sans-serif; --font-b:'DM Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#1c1328;--card:#271b38;--ink:#f1eaf8;--muted:#a597b8;--line:#3a2b50;--pumpkin:#ff8a3d;--done:#6d5f82;--ok:#55c487}
+}
+:root[data-theme="dark"]{--bg:#1c1328;--card:#271b38;--ink:#f1eaf8;--muted:#a597b8;--line:#3a2b50;--pumpkin:#ff8a3d;--done:#6d5f82;--ok:#55c487}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font-b)}
+main{max-width:640px;margin:0 auto;padding:20px 16px 80px}
+h1{font:800 clamp(2rem,9vw,2.8rem)/1 var(--font-h);margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:0 0 18px}
+.prog{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:16px}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.prog-top b{font:800 1.6rem var(--font-h)}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:var(--pumpkin);border-radius:99px;transition:width .3s}
+.bar.full i{background:var(--ok)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:8px 14px;font:500 .92rem var(--font-b);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tools{display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px;font-size:.92rem;color:var(--muted)}
+.tools label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;padding:6px 0}
+.store{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden}
+.store-h{display:flex;align-items:center;gap:10px;padding:12px 16px;border-left:8px solid var(--c);}
+.store-h h2{font:700 1.15rem var(--font-h);margin:0;flex:1}
+.store-h span{font-weight:700;color:var(--muted);font-size:.9rem}
+.store.finished .store-h span{color:var(--ok)}
+.store.finished .store-h h2{text-decoration:line-through;text-decoration-color:var(--ok)}
+ul{list-style:none;margin:0;padding:0}
+li{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 16px;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.box{flex:none;width:26px;height:26px;border:2px solid var(--muted);border-radius:8px;display:grid;place-items:center;color:transparent;font-weight:800}
+.txt{flex:1;overflow-wrap:anywhere}
+.tag{flex:none;font-size:.75rem;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 9px}
+.row[aria-checked="true"] .box{background:var(--ok);border-color:var(--ok);color:#fff}
+.row[aria-checked="true"] .txt{color:var(--done);text-decoration:line-through}
+.row[aria-checked="true"] .tag{opacity:.5}
+.row:focus-visible,.chip:focus-visible,.link:focus-visible,.add button:focus-visible,summary:focus-visible{outline:3px solid var(--pumpkin);outline-offset:-3px}
+.add{display:flex;gap:8px;margin:20px 0}
+.add input,.add select{font:inherit;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);min-width:0}
+.add input{flex:1}
+.add button{font:700 1rem var(--font-b);background:var(--pumpkin);color:#fff;border:0;border-radius:12px;padding:0 18px;cursor:pointer}
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:12px;padding:0 16px}
+summary{padding:14px 0;font:700 1.1rem var(--font-h);cursor:pointer}
+details ul{padding-bottom:12px}
+details li{border:0;padding:4px 0}
+.empty{text-align:center;color:var(--muted);padding:30px 0}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Compras del finde largo</h1>
+  <p class="sub">Agrupadas por local para hacer un solo recorrido. Tocá un producto cuando lo compres.</p>
+
+  <div class="prog" aria-live="polite">
+    <div class="prog-top"><span id="ptxt"></span><b id="ppct"></b></div>
+    <div class="bar" id="bar"><i id="fill"></i></div>
+  </div>
+
+  <div class="chips" id="chips" role="group" aria-label="Filtrar por ocasión"></div>
+  <div class="tools">
+    <label><input type="checkbox" id="hide"> Ocultar lo comprado</label>
+    <button class="link" id="reset">Desmarcar todo</button>
+  </div>
+
+  <div id="list"></div>
+
+  <form class="add" id="addf" onsubmit="return false">
+    <input id="newitem" placeholder="Agregar producto" aria-label="Nuevo producto" autocomplete="off">
+    <select id="newstore" aria-label="Local"></select>
+    <button id="addbtn" type="button">Agregar</button>
+  </form>
+
+  <details>
+    <summary>Para cocinar</summary>
+    <ul>
+      <li>Tarta de acelga</li><li>Pan de carne</li><li>Pollo desmenuzado</li><li>Sopa de pollo</li>
+      <li>Arveja o lenteja</li><li>Pizza de pollo</li><li>Verduras al horno</li>
+      <li>Empanada de carne</li><li>Empanada de choclo</li>
+    </ul>
+  </details>
+  <details>
+    <summary>Desayunos</summary>
+    <ul><li>Cupcakes de avena y frutos rojos</li><li>Huevo con pancito</li></ul>
+  </details>
+</main>
+
+<script>
+// Orden del recorrido: lo que se derrite (helado) va al final.
+const STORES = [
+  {id:'verduleria', n:'Verdulería', c:'#4aa564'},
+  {id:'supermercado', n:'Supermercado', c:'#3b82c4'},
+  {id:'JL', n:'JL', c:'#c9a227'},
+  {id:'cotillon/librería', n:'Cotillón / librería', c:'#d65db1'},
+  {id:'ferreteria', n:'Ferretería', c:'#7a7f87'},
+  {id:'chocomisio', n:'Chocomisio', c:'#8a5a3c'},
+  {id:'milak', n:'Milak', c:'#e0566b'},
+  {id:'duomo', n:'Duomo (helado, al final)', c:'#35b6c9'}
+];
+const OCC = {'cumple pecas':'Cumple Pecas','halloween':'Halloween','casa':'Casa'};
+const base = [
+ ['avena','cumple pecas','supermercado'],['atun','cumple pecas','supermercado'],
+ ['papa (mucho)','cumple pecas','verduleria'],['zanahoria','cumple pecas','verduleria'],
+ ['pirotines','cumple pecas','cotillon/librería'],['mousse de chocolate','cumple pecas','supermercado'],
+ ['masapan','cumple pecas','chocomisio'],['colorante (negro, rojo, blanco, naranja)','cumple pecas','chocomisio'],
+ ['helado de tramontana','cumple pecas','duomo'],['bolitas de chocolate','cumple pecas','milak'],
+ ['banana','cumple pecas','verduleria'],['polvo de hornear','cumple pecas','supermercado'],
+ ['chips de chocolate','cumple pecas','milak'],['globos naranjas','halloween','cotillon/librería'],
+ ['esferas de tergopol','halloween','cotillon/librería'],['vasos de papel blancos','halloween','cotillon/librería'],
+ ['acrilico (negro, naranja, rojo)','cumple pecas','cotillon/librería'],['globos grandes','halloween','cotillon/librería'],
+ ['platos de plastico','cumple pecas','cotillon/librería'],['pelotitas','cumple pecas','cotillon/librería'],
+ ['cinta roja ancha','cumple pecas','cotillon/librería'],['cola vinilica','halloween','cotillon/librería'],
+ ['bizcochuelo','cumple pecas','supermercado'],['dulce de leche','cumple pecas','supermercado'],
+ ['huevo','cumple pecas','JL'],['cebolla','casa','verduleria'],['acelga','casa','verduleria'],
+ ['batata','casa','verduleria'],['zapallo','casa','verduleria'],['merluza','casa','supermercado'],
+ ['pan negro en rodajas','casa','supermercado'],['pochoclo','casa','supermercado'],
+ ['servilleta','casa','supermercado'],['papel higienico','casa','supermercado'],
+ ['choclo','casa','supermercado'],['poximix','halloween','ferreteria'],['tomate','casa','verduleria'],
+ ['perforadora','cumple pecas','cotillon/librería'],['celofan rojo','halloween','cotillon/librería'],
+ ['unipox','halloween','cotillon/librería']
+].map((a,i)=>({id:'b'+i,name:a[0],occ:a[1],store:a[2],done:false}));
+
+const KEY='compras-finde-v1';
+let state={items:base,filter:'todo',hide:false};
+try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.items)state=s}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}};
+const $=id=>document.getElementById(id);
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+
+function render(){
+  const vis=state.items.filter(i=>state.filter==='todo'||i.occ===state.filter);
+  const done=vis.filter(i=>i.done).length, pct=vis.length?Math.round(done/vis.length*100):0;
+  $('ptxt').textContent=`${done} de ${vis.length} comprados`;
+  $('ppct').textContent=pct+'%';
+  $('fill').style.width=pct+'%';
+  $('bar').classList.toggle('full',pct===100&&vis.length>0);
+
+  $('chips').innerHTML=[['todo','Todo']].concat(Object.entries(OCC)).map(([k,l])=>
+    `<button class="chip" data-f="${k}" aria-pressed="${state.filter===k}">${l}</button>`).join('');
+
+  let html='';
+  STORES.forEach(s=>{
+    const its=vis.filter(i=>i.store===s.id);
+    if(!its.length)return;
+    const d=its.filter(i=>i.done).length;
+    const shown=its.filter(i=>!(state.hide&&i.done)).sort((a,b)=>a.done-b.done);
+    html+=`<section class="store${d===its.length?' finished':''}" style="--c:${s.c}">
+      <div class="store-h"><h2>${s.n}</h2><span>${d}/${its.length}</span></div>
+      <ul>${shown.map(i=>`<li><button class="row" role="checkbox" aria-checked="${i.done}" data-id="${i.id}">
+        <span class="box" aria-hidden="true">✓</span><span class="txt">${cap(i.name)}</span>
+        ${state.filter==='todo'?`<span class="tag">${OCC[i.occ]||i.occ}</span>`:''}</button></li>`).join('')}</ul></section>`;
+  });
+  $('list').innerHTML=html||'<p class="empty">No hay productos en esta categoría.</p>';
+}
+
+document.addEventListener('click',e=>{
+  const row=e.target.closest('.row'),chip=e.target.closest('.chip');
+  if(row){const it=state.items.find(i=>i.id===row.dataset.id);it.done=!it.done;save();render();
+    const again=document.querySelector(`[data-id="${it.id}"]`);if(again)again.focus();}
+  else if(chip){state.filter=chip.dataset.f;save();render()}
+});
+$('hide').checked=state.hide;
+$('hide').onchange=e=>{state.hide=e.target.checked;save();render()};
+$('reset').onclick=()=>{if(confirm('¿Desmarcar todos los productos?')){state.items.forEach(i=>i.done=false);save();render()}};
+$('newstore').innerHTML=STORES.map(s=>`<option value="${s.id}">${s.n.replace(' (helado, al final)','')}</option>`).join('');
+function add(){
+  const v=$('newitem').value.trim();if(!v)return;
+  state.items.push({id:'n'+Date.now(),name:v,occ:state.filter==='todo'?'casa':state.filter,store:$('newstore').value,done:false});
+  $('newitem').value='';save();render();
+}
+$('addbtn').onclick=add;
+$('newitem').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();add()}});
+render();
+</script>
+</body>
+</html>
